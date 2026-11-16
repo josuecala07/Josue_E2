@@ -1,3 +1,4 @@
+CONTADOR_SEG.VHD
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -5,14 +6,12 @@ use IEEE.NUMERIC_STD.ALL;
 entity contador_seg is
     Generic (
         -- Para síntesis en FPGA: 12,000,000 ciclos = 1 segundo (con reloj de 12 MHz).
-        -- Para simulación se puede sobreescribir con un valor mucho menor (ej. 5 o 10).
        LIMIT_1S : integer := 12000000
     );
     Port (
         clk_12mhz : in  STD_LOGIC;                    -- Reloj de entrada de 12 MHz
         rst       : in  STD_LOGIC;                    -- Reset asíncrono (activo en alto)
         seg       : out STD_LOGIC_VECTOR (6 downto 0);  -- Segmentos: a, b, c, d, e, f, g
-        dp        : out STD_LOGIC                     -- Punto decimal
     );
 end contador_seg;
 
@@ -26,7 +25,6 @@ architecture arch of contador_seg is
     signal count_dec : integer range 0 to 9 := 0;
 
 begin
-
     -----------------------------------------------------------------
     -- 1. Divisor de Frecuencia (12 MHz a 1 Hz)
     -----------------------------------------------------------------
@@ -45,7 +43,6 @@ begin
             end if;
         end if;
     end process;
-
     -----------------------------------------------------------------
     -- 2. Contador Decimal (0 a 9)
     -----------------------------------------------------------------
@@ -63,7 +60,6 @@ begin
             end if;
         end if;
     end process;
-
     -----------------------------------------------------------------
     -- 3. Decodificador de 7 Segmentos (Ánodo Común: '0' enciende)
     -- Mapeo de bits: seg(6)=a, seg(5)=b, seg(4)=c, seg(3)=d, seg(2)=e, seg(1)=f, seg(0)=g
@@ -84,7 +80,4 @@ begin
             when others => seg <= "1111111"; 
         end case;
     end process;
-
-    dp <= '1'; -- Mantener el punto decimal apagado
-
 end arch;
