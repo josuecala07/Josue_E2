@@ -1,3 +1,4 @@
+TB_CONTADOR_SEG.VHD
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -15,7 +16,6 @@ architecture arch of tb_contador_seg is
             clk_12mhz : in  STD_LOGIC;
             rst       : in  STD_LOGIC;
             seg       : out STD_LOGIC_VECTOR (6 downto 0);
-            dp        : out STD_LOGIC
         );
     end component;
 
@@ -23,7 +23,6 @@ architecture arch of tb_contador_seg is
     signal clk_tb : STD_LOGIC := '0';
     signal rst_tb : STD_LOGIC := '1';
     signal seg_tb : STD_LOGIC_VECTOR (6 downto 0);
-    signal dp_tb  : STD_LOGIC;
 
     -- Período del reloj de 12 MHz -> 1 / 12,000,000 ≈ 83.33 ns
     constant CLK_PERIOD : time := 83.33 ns;
@@ -39,11 +38,10 @@ begin
             clk_12mhz => clk_tb,
             rst       => rst_tb,
             seg       => seg_tb,
-            dp        => dp_tb
         );
 
     -- Proceso de generación del reloj de 12 MHz
-    clk_process : process
+    clk_proc : process
     begin
         clk_tb <= '0';
         wait for CLK_PERIOD / 2;
@@ -52,7 +50,7 @@ begin
     end process;
 
     -- Proceso de estímulos (Reset y observación)
-    stim_proc: process
+    stimulo_proc: process
     begin
         -- Aplicar reset inicial
         rst_tb <= '1';
@@ -62,7 +60,7 @@ begin
         rst_tb <= '0';
         
         -- Dejar correr la simulación el tiempo suficiente para ver varios ciclos (0 a 9 y reinicio)
-        wait for 4 us;
+        wait for 8 us;
         
         -- Fin de la simulación
         assert false report "Simulación finalizada correctamente." severity failure;
